@@ -310,10 +310,10 @@
         <div class="section">
             <h2>Fuel Efficiency Converter</h2>
             <div class="input-group">
-                <label id="label-top" for="input-top">Litres per 100 Kilometers</label>
+                <label id="label-top" for="input-top">Kilometres per Litre</label>
                 <div class="input-wrapper">
                     <input type="number" id="input-top" placeholder="Enter value" min="0.01" step="any">
-                    <span class="unit-badge" id="badge-top">L/100km</span>
+                    <span class="unit-badge" id="badge-top">km/L</span>
                 </div>
             </div>
 
@@ -324,10 +324,10 @@
             </button>
 
             <div class="input-group">
-                <label id="label-bottom" for="input-bottom">Kilometers per Litre</label>
+                <label id="label-bottom" for="input-bottom">Litres per 100 Kilometres</label>
                 <div class="input-wrapper">
                     <input type="number" id="input-bottom" placeholder="Enter value" min="0.01" step="any">
-                    <span class="unit-badge" id="badge-bottom">km/L</span>
+                    <span class="unit-badge" id="badge-bottom">L/100km</span>
                 </div>
             </div>
 
@@ -353,7 +353,7 @@
                 <div class="input-group">
                     <label for="fuel-price">Price per Litre <span style="font-size:11px;">(base: MYR)</span></label>
                     <div class="price-input-wrapper">
-                        <input type="number" id="fuel-price" placeholder="e.g. 2.05" min="0.01" step="any">
+                        <input type="number" id="fuel-price" placeholder="e.g. 1.99" min="0.01" step="any">
                         <span class="unit-badge" id="currency-badge">RM</span>
                     </div>
                 </div>
@@ -365,15 +365,15 @@
                 <div class="input-group">
                     <label for="distance">Distance</label>
                     <div class="input-wrapper">
-                        <input type="number" id="distance" placeholder="e.g. 300" min="0.1" step="any">
+                        <input type="number" id="distance" placeholder="e.g. 400" min="0.1" step="any">
                         <span class="unit-badge">km</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="efficiency">Efficiency</label>
                     <div class="input-wrapper">
-                        <input type="number" id="efficiency" placeholder="e.g. 7.5" min="0.1" step="any">
-                        <span class="unit-badge" id="eff-unit">L/100km</span>
+                        <input type="number" id="efficiency" placeholder="e.g. 13.5" min="0.1" step="any">
+                        <span class="unit-badge" id="eff-unit">km/L</span>
                     </div>
                 </div>
             </div>
@@ -438,6 +438,7 @@
         const badgeTop = document.getElementById('badge-top');
         const badgeBottom = document.getElementById('badge-bottom');
         const swapButton = document.getElementById('swap-button');
+        const efficiency = document.getElementById('efficiency');
 
         function convert(value) {
             if (!value || parseFloat(value) <= 0) return '';
@@ -445,7 +446,7 @@
             return isNaN(result) ? '' : Number(result.toFixed(2));
         }
 
-        inputTop.addEventListener('input', () => { inputBottom.value = convert(inputTop.value); });
+        inputTop.addEventListener('input', () => { inputBottom.value = convert(inputTop.value); efficiency.value = inputTop.value; });
         inputBottom.addEventListener('input', () => { inputTop.value = convert(inputBottom.value); });
 
         swapButton.addEventListener('click', () => {
@@ -460,6 +461,7 @@
             const tempValue = inputTop.value;
             inputTop.value = inputBottom.value;
             inputBottom.value = tempValue;
+            efficiency.value = inputTop.value;  // Update efficiency input to match top field
 
             updateEfficiencyUnitBadge();
         });
@@ -485,7 +487,7 @@
 
         let fxRates = null;
         let ratesLoaded = false;
-        let basePriceMYR = 2.05;   // Tracks the RM price so we avoid rounding drift
+        let basePriceMYR = 1.99;   // Tracks the RM price so we avoid rounding drift
 
         function updateEfficiencyUnitBadge() {
             effUnit.textContent = (badgeTop.textContent === 'L/100km') ? 'L/100km' : 'km/L';
